@@ -1,23 +1,23 @@
-use tp_1_safe_elevator_interface::{elevator, elevator_error, state};
+use tp_1_safe_elevator_interface::{elevator, ElevatorError, State};
 
 #[test]
 fn call_and_step_reaches_destination_and_opens_doors() {
     let mut elevator = elevator::new(0).expect("valid start floor");
 
     elevator.call(3).expect("call accepted");
-    assert_eq!(elevator.state(), state::MovingUp);
+    assert_eq!(elevator.state(), State::MovingUp);
 
     elevator.step().expect("step 1");
     assert_eq!(elevator.floor(), 1);
-    assert_eq!(elevator.state(), state::MovingUp);
+    assert_eq!(elevator.state(), State::MovingUp);
 
     elevator.step().expect("step 2");
     assert_eq!(elevator.floor(), 2);
-    assert_eq!(elevator.state(), state::MovingUp);
+    assert_eq!(elevator.state(), State::MovingUp);
 
     elevator.step().expect("step 3");
     assert_eq!(elevator.floor(), 3);
-    assert_eq!(elevator.state(), state::DoorsOpen);
+    assert_eq!(elevator.state(), State::DoorsOpen);
     assert!(elevator.queue().is_empty());
 }
 
@@ -59,6 +59,7 @@ fn close_doors_with_no_open_doors_returns_error() {
     assert_eq!(result, Err(ElevatorError::DoorsAlreadyClosed));
 }
 
+
 #[test]
 fn status_returns_snapshot() {
     let mut elevator = elevator::new(0).expect("valid start floor");
@@ -67,7 +68,7 @@ fn status_returns_snapshot() {
     let status = elevator.status();
 
     assert_eq!(status.floor, 0);
-    assert_eq!(status.state, state::MovingUp);
+    assert_eq!(status.state, State::MovingUp);
     assert_eq!(status.queue, vec![4]);
 }
 
@@ -90,7 +91,7 @@ fn close_doors_sets_direction_when_queue_exists() {
     elevator.call(5).expect("call accepted");
     elevator.close_doors().expect("close doors");
 
-    assert_eq!(elevator.state(), state::MovingUp);
+    assert_eq!(elevator.state(), State::MovingUp);
 }
 
 #[test]
@@ -100,5 +101,5 @@ fn step_with_empty_queue_returns_error() {
     let result = elevator.step();
 
     assert_eq!(result, Err(ElevatorError::EmptyQueue));
-    assert_eq!(elevator.state(), state::Idle);
+    assert_eq!(elevator.state(), State::Idle);
 }
