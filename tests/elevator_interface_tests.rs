@@ -1,4 +1,4 @@
-use tp_1_safe_elevator_interface::{elevator, ElevatorError, State};
+use tp_1_safe_elevator_interface::{ElevatorError, State, elevator};
 
 #[test]
 fn call_and_step_reaches_destination_and_opens_doors() {
@@ -58,7 +58,6 @@ fn close_doors_with_no_open_doors_returns_error() {
 
     assert_eq!(result, Err(ElevatorError::DoorsAlreadyClosed));
 }
-
 
 #[test]
 fn status_returns_snapshot() {

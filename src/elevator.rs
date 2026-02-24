@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
 
-use crate::{elevator_error::ElevatorError, state::{State}};
+use crate::{elevator_error::ElevatorError, state::State};
 
 pub struct Elevator {
     floor: usize,
@@ -18,8 +18,12 @@ pub fn new(floor: usize) -> Result<Elevator, ElevatorError> {
     if floor > 5 {
         return Err(ElevatorError::InvalidFloor(floor));
     }
-    
-    Ok(Elevator { floor: floor, state: State::Idle, orders: VecDeque::new() })
+
+    Ok(Elevator {
+        floor: floor,
+        state: State::Idle,
+        orders: VecDeque::new(),
+    })
 }
 
 impl Elevator {
@@ -32,7 +36,7 @@ impl Elevator {
             if destination < self.floor {
                 self.state = State::MovingDown;
             }
-            
+
             if destination > self.floor {
                 self.state = State::MovingUp;
             }
@@ -44,7 +48,7 @@ impl Elevator {
         }
     }
 
-    pub fn call(&mut self, floor: usize) -> Result<(), ElevatorError>{
+    pub fn call(&mut self, floor: usize) -> Result<(), ElevatorError> {
         if floor > 5 {
             return Err(ElevatorError::InvalidFloor(floor));
         }
@@ -70,7 +74,7 @@ impl Elevator {
         Ok(())
     }
 
-    pub fn step(&mut self) -> Result<(), ElevatorError>{
+    pub fn step(&mut self) -> Result<(), ElevatorError> {
         match self.state {
             State::DoorsOpen => {
                 return Err(ElevatorError::CannotMoveDoorsOpen);
@@ -94,7 +98,7 @@ impl Elevator {
         Ok(())
     }
 
-    pub fn open_doors(&mut self) -> Result<(), ElevatorError>{
+    pub fn open_doors(&mut self) -> Result<(), ElevatorError> {
         match self.state {
             State::DoorsOpen => Err(ElevatorError::DoorsAlreadyOpen),
             State::MovingDown | State::MovingUp => Err(ElevatorError::CannotOpenWhileMoving),
@@ -105,7 +109,7 @@ impl Elevator {
         }
     }
 
-    pub fn close_doors(&mut self) -> Result<(), ElevatorError>{
+    pub fn close_doors(&mut self) -> Result<(), ElevatorError> {
         if self.state != State::DoorsOpen {
             return Err(ElevatorError::DoorsAlreadyClosed);
         }
@@ -115,11 +119,9 @@ impl Elevator {
         Ok(())
     }
 
-    
-
     pub fn state(&self) -> State {
         self.state
-    } 
+    }
     pub fn floor(&self) -> usize {
         self.floor
     }
@@ -127,6 +129,10 @@ impl Elevator {
         &self.orders
     }
     pub fn status(&self) -> Status {
-        Status { floor: self.floor, state: self.state, queue: self.orders.clone() }
+        Status {
+            floor: self.floor,
+            state: self.state,
+            queue: self.orders.clone(),
+        }
     }
 }
